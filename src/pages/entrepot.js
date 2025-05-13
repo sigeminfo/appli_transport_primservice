@@ -8,19 +8,19 @@ export class EntrepotPage extends HTMLElement {
     }
     connectedCallback() {
         this.render();
-        this.getEmbRecap();
+        this.getPalRecap();
     }
 
-    async getEmbRecap() {
+    async getPalRecap() {
         const data = {
             chauf_cod: sessionStorage.getItem("cliweb")
         };
         
-        this.embRecap = await this.modelTournees.getEmbRecap(data);
+        this.palRecap = await this.modelTournees.getPalRecap(data);
 
-        if (this.embRecap.tournees) {
-            console.log("getEmbRecap");
-            console.log(this.embRecap);
+        if (this.palRecap.recap) {
+            console.log("getPalRecap");
+            console.log(this.palRecap);
 
             this.querySelector('#recap').innerHTML = this.recapDisplay();
         }
@@ -29,22 +29,14 @@ export class EntrepotPage extends HTMLElement {
     recapDisplay() {
         let html = "";
 
-        this.embRecap.tournees.forEach(tournee => {
-            let htmlEmb = "";
-            tournee.recap.forEach(emb => {
-                htmlEmb += `<div class='gap-3 py-3'>
-                                <h3 class='font-semibold'>${emb.embLib}</h3>
-                                <div class='flex justify-between'>                                    
-                                    <p>Déposés : ${emb.qteSortie}</p>
-                                    <p>Récupérés : ${emb.qteEntree}</p>                                
-                                </div>
-                            </div>`;
-            })
-
-            html += `<div class="recapTournee bg-white rounded-md gap-3 p-3">
-                        <h2 class='text-lg font-semibold'>Tournée ${tournee.nom}</h2>
-                        ${htmlEmb}
-                    </div>`;
+        this.palRecap.recap.forEach(pal => {
+            html = `<div class="recapTournee bg-white rounded-md gap-3 p-3">
+                            <h2 class='text-lg font-semibold'>${pal.cli_nom} - ${pal.pal_cod}</h2>
+                            <div class='flex justify-between'>                                    
+                                <p>Déposés : ${pal.sortie}</p>
+                                <p>Récupérés : ${pal.entree}</p>                                
+                            </div>
+                        </div>`;            
         });
 
         return html;        

@@ -15,6 +15,7 @@ export class PrecisionsPage extends HTMLElement {
     connectedCallback() {
         this.render();
         this.getTourneeDetails();
+        this.getPal();
 
         const btnValidateDelivery = document.querySelector("#validateDelivery");
         btnValidateDelivery.addEventListener("click", (e) => {
@@ -52,6 +53,37 @@ export class PrecisionsPage extends HTMLElement {
         }
     }
 
+    async getPal() {
+        console.log("getPal");
+        
+        this.palList = await this.modelTournees.getPal();        
+        console.log(this.palList);
+
+        if (this.palList) {
+            this.querySelector('#palettes').innerHTML = this.palDisplay();
+        }
+    }
+
+    palDisplay() {
+        let html = ''; // `<div class='flex justify-between gap-3'>`;
+
+        this.palList.forEach(val => {
+            html += `<h3>${val.palLib}</h3>
+                    <div class='flex justify-between gap-3 palettes' data-pal-cod=${val.palCod}>
+                        <div class='w-[48%]'>
+                            <sg-input input='number' label='Palettes déposées' idname='${val.palCod}DepoInput' inputCss='!h-12'></sg-input>
+                        </div>
+                        <div class='w-[48%]'>
+                            <sg-input input='number' label='Palettes récupérées' idname='${val.palCod}RecupInput' inputCss='!h-12'></sg-input>
+                        </div>
+                    </div>`;
+        });
+
+        //html += '</div>';
+
+        return html;
+    }
+
     statutList = [
         { id: 1, lib: "Client Absent", color: "#f67777" },
         { id: 2, lib: "Livraison effectuée", color: "#afe595" },
@@ -62,7 +94,6 @@ export class PrecisionsPage extends HTMLElement {
         let html = '<div class="bg-white rounded-md flex flex-col gap-3 p-3"><h3 class="font-semibold">Statut</h3>';
         
         this.statutList.forEach(val => {
-            console.log("abc");
             console.log(val.facNblActif);
             html += `<div class='flex items-center justify-between h-full'>
                         <div class='flex gap-3 items-center'><span class='h-5 w-5 rounded-full' style='background-color: ${val.pblivColor}'></span><p>${val.pblivLib}</p></div>
@@ -87,16 +118,7 @@ export class PrecisionsPage extends HTMLElement {
             </div>
 
             <div class='p-3 flex flex-col gap-3'>
-                <div class='bg-white rounded-md flex flex-col gap-3 p-3'>
-                    <div class='flex justify-between gap-3'>
-                        <div class='w-[48%]'>
-                            <sg-input input='number' label='Palettes déposées' idname='palDepoInput' inputCss='!h-12'></sg-input>
-                        </div>
-
-                        <div class='w-[48%]'>
-                            <sg-input input='number' label='Palettes récupérées' idname='palRecupInput' inputCss='!h-12'></sg-input>
-                        </div>
-                    </div>
+                <div id="palettes" class='bg-white rounded-md flex flex-col gap-3 p-3'>
                 </div>
 
                 <div class='bg-white rounded-md flex justify-between gap-3 p-3'>
@@ -158,10 +180,8 @@ export class PrecisionsPage extends HTMLElement {
 
     validateDelivery() {
         console.log("validateDelivery");
-        let ifcoDepoInput = document.getElementById('ifcoDepoInput').value;
-        let paniersDepoInput = document.getElementById('paniersDepoInput').value;
-        let ifcoRecupInput = document.getElementById('ifcoRecupInput').value;
-        let paniersRecupInput = document.getElementById('paniersRecupInput').value;        
+        let palettes = document.querySelectorAll('.palettes'); 
+        let dataPal = [];
 
         const data = {
             IOtou: this.detailsList.touCod,
@@ -169,34 +189,38 @@ export class PrecisionsPage extends HTMLElement {
             IOchauf: sessionStorage.getItem('cliweb')
         };
 
-        const dataPaniers = {                 
-            ...data,
-            IOqteEntree: paniersRecupInput,
-            IOqteSortie: paniersDepoInput,
-            IOemb: "PAN"
-        };
 
-        const dataIfco = {
-            ...data,
-            IOqteEntree: ifcoRecupInput,
-            IOqteSortie: ifcoDepoInput,
-            IOemb: "IFCO"
-        };
-
-        this.modelTournees.updateStockEmb(dataPaniers).then((response) => {
-            console.log("Paniers OK");
-            console.log(response);
-            // si le 1er est OK, on envoie le 2nd
-            this.modelTournees.updateStockEmb(dataIfco).then((response2) => {
-                console.log("IFCO OK");
-                console.log(response2);
-
-                this.modelTournees.validateDelivery(data).then((responseValidate) => {
-                    console.log("Livraison OK");
-                    console.log(responseValidate);
-                    window.location.href = `#/etape?tou_cod=${this.detailsList.touCod}`;
-                });
+        palettes.forEach(palette => {
+            console.log(palette.dataset.palCod);
+            
+            const depoInput = palette.querySelector(`#${palette.dataset.palCod}DepoInput`);
+            const recupInput = palette.querySelector(`#${palette.dataset.palCod}RecupInput`);
+            
+            dataPal.push({
+                palCod: palette.dataset.palCod,
+                entree: depoInput ? depoInput.value : '',
+                sortie: recupInput ? recupInput.value : '',
+                chauf: sessionStorage.getItem('cliweb'),
+                facNbl: this.detailsList.facNbl,
             });
+        });
+
+        dataPal = {
+            "palettes": [...dataPal]
+        }
+
+        console.log(data, dataPal);
+
+        this.modelTournees.updateStockPal(dataPal).then((response) => {
+            console.log("Palettes OK");
+            console.log(response);
+ 
+            // si la requête pour les palettes est OK, on envoie la validation de la livraison
+            this.modelTournees.validateDelivery(data).then((responseValidate) => {
+                console.log("Livraison OK");
+                console.log(responseValidate);
+                window.location.href = `#/etape?tou_cod=${this.detailsList.touCod}`;
+            });            
         });        
     }
 }

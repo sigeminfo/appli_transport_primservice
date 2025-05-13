@@ -11,6 +11,7 @@ export class TourneePage extends HTMLElement {
         this.getTournees();
 
         this.addEventListener('click', (event) => {
+            console.log("click");
             const tourneeElement = event.target.closest('.tournee');
             if (tourneeElement) {
                 const tourId = tourneeElement.dataset.id;
@@ -23,12 +24,25 @@ export class TourneePage extends HTMLElement {
     }
 
     handleConfirmCamion() {
+        console.log("handleConfirmCamion");
         const numCamion = this.querySelector('#numCamion').value;
         const tempCamion = this.querySelector('#tempCamion').value;
         
         if (numCamion && tempCamion) {
-            // Both fields are filled, redirect to etape page
-            window.location.href = `#/etape?tou_cod=${this.currentTourId}`;
+            const data = {
+                IOcam: numCamion,
+                IOchauf: sessionStorage.getItem('cliweb'),
+                IOtemp: tempCamion,
+                IOtou: this.currentTourId
+            };
+
+            this.modelTournees.updateCamion(data).then((response) => {
+                console.log("modif camion");
+                console.log(response);
+
+                // Both fields are filled, redirect to etape page
+                window.location.href = `#/etape?tou_cod=${this.currentTourId}`;
+            });            
         } else {
             // Show error or alert
             alert('Veuillez remplir tous les champs');
