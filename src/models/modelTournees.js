@@ -27,7 +27,7 @@ export class ModelTournees {
         });
     }
 
-    // Méthode pour récupérer tous les produits ici en l'occurence
+    // Méthode pour récupérer toutes les tournées
     async getAllTou() {
         try {
             const resp = await this.apiService.get(`${this.apiServiceSuffix}/getTou`, {});
@@ -36,6 +36,20 @@ export class ModelTournees {
             }
             return resp.tournees;
         } catch (error) {
+            ErrorsHandler.handleError(error);
+            throw error;
+        }
+    }
+
+    async getPal() {
+        try {
+            const resp = await this.apiService.get(`${this.apiServiceSuffix}/getPal`, {});
+            if (resp._errors) {
+                throw new Error(resp._errors);
+            }
+            return resp.palettes;
+        }
+        catch (error) {
             ErrorsHandler.handleError(error);
             throw error;
         }
@@ -54,9 +68,9 @@ export class ModelTournees {
         }
     }
 
-    async getEmbRecap(data) {
+    async getPalRecap(data) {
         try {
-            const resp = await this.apiService.get(`${this.apiServiceSuffix}/getEmbRecap`, data);
+            const resp = await this.apiService.get(`${this.apiServiceSuffix}/getPalRecap`, data);
             if (resp._errors) {
                 throw new Error(resp._errors);
             }
@@ -67,9 +81,9 @@ export class ModelTournees {
         }
     }
 
-    async updateStockEmb(data) {
+    async updateStockPal(data) {
         try {
-            const resp = await this.apiService.put(`${this.apiServiceSuffix}/updateStkEmb`, data);
+            const resp = await this.apiService.put(`${this.apiServiceSuffix}/updateStkPalettes`, data);
             if (resp._errors) {
                 throw new Error(resp._errors);
             }
@@ -104,5 +118,20 @@ export class ModelTournees {
            ErrorsHandler.handleError(error);
            throw error; 
         }
+    }
+
+    async updateCamion(data) {
+        try {
+            const resp = await this.apiService.put(`${this.apiServiceSuffix}/updateCamion`, data);
+            if (resp._errors) {
+                throw new Error(resp._errors);
+            }
+            return resp;        
+        } 
+        catch (error) {
+            ErrorsHandler.handleError(error);
+            throw error;
+        }
+
     }
 }
