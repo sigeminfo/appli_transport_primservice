@@ -20,8 +20,11 @@ export class EtapePage extends HTMLElement {
         };
 
         this.etapesList = await this.modelTournees.getTouDetails(data);
-        this.etapesList = this.etapesList.details;
+        console.log(this.etapesList);
 
+        this.etapesStatuts = this.etapesList.statuts; 
+        this.etapesList = this.etapesList.details;
+        
         console.log("getTourneeDetails");
         console.log(this.etapesList);
 
@@ -29,9 +32,29 @@ export class EtapePage extends HTMLElement {
     }
 
     etapesDisplay() {
+        
+
         let html = '<div class="flex flex-col gap-3">';
         this.etapesList && this.etapesList.forEach(val => {
-            html += `<div class='${val.isLiv == 1 ? 'bg-green-200' : 'bg-white'} rounded-md relative h-18 p-3 cursor-pointer'>
+
+            let color = "";
+            let pbLiv = false;
+            let htmlStatut = '';
+            let statutFiltre= this.etapesStatuts.filter(statuts => statuts.facNbl == val.facNbl);
+
+            statutFiltre && statutFiltre.forEach(statuts => {
+                if (statuts.facNblActif == '1') {
+                    color = statuts.pblivColor;
+                    pbLiv = true;
+                };
+            });
+            
+            if (pbLiv == true) {
+                htmlStatut = `<span class='h-5 w-5 rounded-full mr-3' style='background-color: rgb(${color})'></span>`;    
+            }
+
+            html += `<div class='${val.isLiv == 1 ? 'bg-green-200' : (pbLiv == true ? 'bg-white/50' : 'bg-white')} rounded-md relative h-18 p-3 cursor-pointer flex items-center'>
+                        ${htmlStatut}
                         <a href="#/details?tou_cod=${val.touCod}&fac_nbl=${val.facNbl}" class='w-full flex items-center justify-between gap-3'>
                             <div>
                                 <h3>${val.cliNom}</h3>

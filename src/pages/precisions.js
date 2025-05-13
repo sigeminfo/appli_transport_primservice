@@ -96,7 +96,7 @@ export class PrecisionsPage extends HTMLElement {
         this.statutList.forEach(val => {
             console.log(val.facNblActif);
             html += `<div class='flex items-center justify-between h-full'>
-                        <div class='flex gap-3 items-center'><span class='h-5 w-5 rounded-full' style='background-color: ${val.pblivColor}'></span><p>${val.pblivLib}</p></div>
+                        <div class='flex gap-3 items-center'><span class='h-5 w-5 rounded-full' style='background-color: rgb(${val.pblivColor})'></span><p>${val.pblivLib}</p></div>
                         <sg-toggle-btn css="statuts" idname='toggle-btn-${val.pblivCod}' value="${val.facNblActif == 1 ? 'checked' : ''}"></sg-toggle-btn>
                     </div>`;
         });
