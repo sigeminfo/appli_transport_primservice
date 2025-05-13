@@ -31,9 +31,12 @@ export class EtapePage extends HTMLElement {
     etapesDisplay() {
         let html = '<div class="flex flex-col gap-3">';
         this.etapesList && this.etapesList.forEach(val => {
-            html += `<div class='${val.isLiv == 1 ? 'bg-green-200' : 'bg-white'} rounded-md relative h-12 p-3 cursor-pointer'>
+            html += `<div class='${val.isLiv == 1 ? 'bg-green-200' : 'bg-white'} rounded-md relative h-18 p-3 cursor-pointer'>
                         <a href="#/details?tou_cod=${val.touCod}&fac_nbl=${val.facNbl}" class='w-full flex items-center justify-between gap-3'>
-                            <h3>${val.cliNom}</h3>
+                            <div>
+                                <h3>${val.cliNom}</h3>
+                                <p class='text-sm font-light'>${val.cliCp} - ${val.cliVil}</p>
+                            </div>
                             <img src='img/icons/triangle.svg'>
                         </a>
                     </div>`;
