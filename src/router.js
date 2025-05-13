@@ -35,6 +35,7 @@ function loadComponent(route, params) {
 
             case "/etape":
                 const etapePage = document.createElement('etape-page');
+                etapePage.classList.add('h-full'); // Ajout de la classe min-h-screen
                 if (params) {
                     const tournee = params.split('=')[1];
                     etapePage.setAttribute('data-param', tournee);

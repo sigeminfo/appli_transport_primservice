@@ -40,6 +40,8 @@ export class TourneePage extends HTMLElement {
                 console.log("modif camion");
                 console.log(response);
 
+                sessionStorage.setItem('camion', numCamion);
+
                 // Both fields are filled, redirect to etape page
                 window.location.href = `#/etape?tou_cod=${this.currentTourId}`;
             });            
@@ -47,7 +49,7 @@ export class TourneePage extends HTMLElement {
             // Show error or alert
             alert('Veuillez remplir tous les champs');
         }
-    }2
+    }
     
 
     async getTournees() {        

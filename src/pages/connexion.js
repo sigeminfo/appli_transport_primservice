@@ -30,6 +30,7 @@ export class ConnexionPage extends HTMLElement {
             console.log(response);
             if (response.response.lCnx == 'true') {
                 console.log("Connexion OK");
+                sessionStorage.setItem('camion', '');
                 sessionStorage.setItem('cliweb', idConnexion.value);
                 window.location.href = "#/home-page";
             }
