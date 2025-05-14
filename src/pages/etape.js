@@ -25,7 +25,13 @@ export class EtapePage extends HTMLElement {
     }    
 
     showCamionModal(tourId) {
-        this.currentTourId = tourId;
+        this.currentTourId = getUrlParameter('tou_cod');
+
+        const numCamion = this.querySelector('#numCamion');
+        const tempCamion = this.querySelector('#tempCamion');
+
+        numCamion.value = sessionStorage.getItem('camion');
+        tempCamion.value = "";
 
         const modal = this.querySelector('#modal-camion');
         modal.style.display = 'block';
@@ -50,8 +56,8 @@ export class EtapePage extends HTMLElement {
 
                 sessionStorage.setItem('camion', numCamion);
 
-                // Both fields are filled, redirect to etape page
-                window.location.href = `#/etape?tou_cod=${this.currentTourId}`;
+                const modal = this.querySelector('#modal-camion');
+                modal.style.display = 'none';
             });            
         } else {
             // Show error or alert
