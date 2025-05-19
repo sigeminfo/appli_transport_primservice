@@ -68,6 +68,19 @@ export class ModelTournees {
         }
     }
 
+    async getCamions() {
+        try {
+            const resp = await this.apiService.get(`${this.apiServiceSuffix}/getCam`, {});
+            if (resp._errors) {
+                throw new Error(resp._errors);
+            }
+            return resp.camions;
+        } catch (error) {
+            ErrorsHandler.handleError(error);
+            throw error;
+        }
+    }
+
     async getPalRecap(data) {
         try {
             const resp = await this.apiService.get(`${this.apiServiceSuffix}/getPalRecap`, data);
