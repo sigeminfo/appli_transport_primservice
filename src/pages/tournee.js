@@ -75,7 +75,7 @@ export class TourneePage extends HTMLElement {
                 this.camionsList.forEach(camion => {
                     const option = document.createElement('option');
                     option.value = camion.value;
-                    option.textContent = camion.lib;
+                    option.textContent = camion.value + " - " + camion.lib;
                     select.appendChild(option);
                 });
             } else {
@@ -133,7 +133,7 @@ export class TourneePage extends HTMLElement {
                 <div class='bg-white rounded-t-[32px] flex flex-col items-center absolute bottom-0 w-full px-3 pb-4'>
                     <img src='/img/tournee.svg'>
                     <div class='flex justify-between w-full mb-3'>
-                        <div>
+                        <div class="flex flex-col w-[48%]">
                             <label for="numCamion">Camion</label> 
                             <select id="numCamion" class="rounded border h-12 px-2 appearance-none bg-no-repeat bg-['url(/img/icons/select.svg)'] bg-[98%_center] bg-[25px_25px]">
                                 <option value="">Sélect. un camion</option>

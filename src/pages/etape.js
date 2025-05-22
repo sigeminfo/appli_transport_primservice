@@ -70,12 +70,15 @@ export class EtapePage extends HTMLElement {
 
     async getCamions() {
         const camions = await this.modelTournees.getCamions();
+        const selectedNumCamion = sessionStorage.getItem('camion', numCamion);
+
         this.camionsList = camions.map(camion => ({
             value: camion.camCod || '', 
             lib: camion.camNom || ''    
         }));
         console.log('Camions formatés pour le select:', this.camionsList);
-        
+        console.log('selectedNumCamion', selectedNumCamion);        
+
         // Attendre que le select soit dans le DOM
         const waitForSelect = () => {
             let select = this.querySelector('#numCamion');
@@ -90,7 +93,10 @@ export class EtapePage extends HTMLElement {
                 this.camionsList.forEach(camion => {
                     const option = document.createElement('option');
                     option.value = camion.value;
-                    option.textContent = camion.lib;
+                    option.textContent = camion.value + " - " + camion.lib;
+                    if (selectedNumCamion && camion.value === selectedNumCamion) {
+                        option.selected = true;
+                    }
                     select.appendChild(option);
                 });
             } else {
@@ -147,6 +153,7 @@ export class EtapePage extends HTMLElement {
                             <div>
                                 <h3>${val.cliNom}</h3>
                                 <p class='text-sm font-light'>${val.cliCp} - ${val.cliVil}</p>
+                                <p class='text-sm font-light'><span class='underline font-bold'>Commentaire :</span> ${val.facCochauf}</p>
                             </div>
                             <img src='img/icons/triangle.svg'>
                         </a>
@@ -189,7 +196,7 @@ export class EtapePage extends HTMLElement {
                 <div class='bg-white rounded-t-[32px] flex flex-col items-center absolute bottom-0 w-full px-3 pb-4'>
                     <img src='/img/tournee.svg'>
                     <div class='flex justify-between w-full mb-3 gap-2 p-1'>
-                        <div>
+                        <div class="flex flex-col w-[48%]">
                             <label for="numCamion">Camion</label> 
                             <select id="numCamion" class="rounded border h-12 px-2 appearance-none bg-no-repeat bg-['url(/img/icons/select.svg)'] bg-[98%_center] bg-[25px_25px]">
                                 <option value="">Sélect. un camion</option>

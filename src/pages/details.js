@@ -42,10 +42,12 @@ export class DetailsPage extends HTMLElement {
                             <p>${this.detailsList.cliAd1 + " " + this.detailsList.cliAd2}</p>
                             <p>${this.detailsList.cliCp} ${this.detailsList.cliVil}</p>
                         </div>
+                        <!--
                         <div class='bg-white rounded-md flex flex-col gap-3 p-2'>
                             <p class='underline'>Commentaire :</p>
                             <p>${this.detailsList.facCochauf}</p>
                         </div>
+                        -->
                         <div class='bg-[#CCF4F4] flex items-center h-14 rounded-md p-3'>
                             <a href="#/precisions?tou_cod=${this.detailsList.touCod}&fac_nbl=${this.detailsList.facNbl}" class='w-full flex justify-between items-center gap-3'>
                                 <p>VALIDER / PRÉCISER LA LIVRAISON</p>
