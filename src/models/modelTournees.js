@@ -147,4 +147,44 @@ export class ModelTournees {
         }
 
     }
+
+    async getImgClient(data) {
+        try {
+            const resp = await this.apiService.post(`api.php`, data);
+            if (resp._errors) {
+                throw new Error(resp._errors);
+            }
+            return resp;
+        } catch (error) {
+            ErrorsHandler.handleError(error);
+            throw error;
+        }
+
+        /*
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", 'api.php', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                let images = JSON.parse(xhr.response);
+                let html = '';
+                
+                console.log(images);
+                if (images) {
+                    images.forEach(val => {
+                        html += `<img src='`+ val.filename +`'>`;
+                        document.getElementById('imgTouDetails').style.height = 'auto';
+                        document.getElementById('imgTouDetails').style.backgroundColor = 'transparent';
+                    });
+                } else {
+                    html = "Pas d'image pour ce client.";
+                    document.getElementById('imgTouDetails').style.backgroundColor = 'white';
+                }
+                
+                document.getElementById('imgTouDetails').innerHTML = html;
+            }
+        }
+        xhr.send(JSON.stringify(data)); 
+        */
+    }
 }
