@@ -150,41 +150,89 @@ export class ModelTournees {
 
     async getImgClient(data) {
         try {
-            const resp = await this.apiService.post(`api.php`, data);
-            if (resp._errors) {
+            const response = await fetch(`admin/api.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            
+            if (response._errors) {
                 throw new Error(resp._errors);
             }
-            return resp;
+            return response.json();
         } catch (error) {
             ErrorsHandler.handleError(error);
             throw error;
         }
+    }
 
-        /*
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", 'api.php', true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                let images = JSON.parse(xhr.response);
-                let html = '';
+    async compULImage(file, facNbl) {
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 1500;
+                    const maxHeight = 1500;
                 
-                console.log(images);
-                if (images) {
-                    images.forEach(val => {
-                        html += `<img src='`+ val.filename +`'>`;
-                        document.getElementById('imgTouDetails').style.height = 'auto';
-                        document.getElementById('imgTouDetails').style.backgroundColor = 'transparent';
+                    let newWidth = img.width;
+                    let newHeight = img.height;
+    
+                    if (img.width > maxWidth) {
+                        newWidth = maxWidth;
+                        newHeight = (img.height * maxWidth) / img.width;
+                    }
+    
+                    if (newHeight > maxHeight) {
+                        newHeight = maxHeight;
+                        newWidth = (img.width * maxHeight) / img.height;
+                    }
+    
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+    
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                
+                    const compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    console.log(compressedImageBase64);
+                
+                    const mimeString = compressedImageBase64.split(',')[0].split(':')[1].split(';')[0];
+                    const byteCharacters = atob(compressedImageBase64.split(',')[1]);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                
+                    const blob = new Blob([byteArray], { type: mimeString });
+                    //const fileName = 'comp'+file.name;
+                    const fileName = facNbl + 'compressed.jpg';
+                    const image = new File([blob], fileName, { type: mimeString });
+                
+                    let form_data = new FormData();
+                    form_data.append('file', image);
+                    form_data.append('filename', facNbl);
+
+                    // Remplacement de $.ajax par fetch
+                    fetch('media/web/tournee/upload/img.php', {
+                        method: 'POST',
+                        body: form_data
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log('uploaded');
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de l\'upload :', error);
                     });
-                } else {
-                    html = "Pas d'image pour ce client.";
-                    document.getElementById('imgTouDetails').style.backgroundColor = 'white';
                 }
-                
-                document.getElementById('imgTouDetails').innerHTML = html;
-            }
+            };
+            reader.readAsDataURL(file);
         }
-        xhr.send(JSON.stringify(data)); 
-        */
     }
 }

@@ -10,12 +10,7 @@ export class DetailsPage extends HTMLElement {
     }
     connectedCallback() {
         this.render();
-        this.getTourneeDetails(); 
-
-        const btnImg = this.querySelector('#btnImg');
-        btnImg.addEventListener('click', (e) => {
-            this.imgTouDetails(e.target.dataset.cliCod);
-        });
+        this.getTourneeDetails();         
     }
 
     async getTourneeDetails() {
@@ -35,6 +30,11 @@ export class DetailsPage extends HTMLElement {
         console.log(this.detailsList);
 
         this.querySelector('#details').innerHTML = this.detailsDisplay();
+
+        const btnImg = this.querySelector('#btnImg');
+        btnImg.addEventListener('click', (e) => {
+            this.imgTouDetails(e.target.dataset.cliCod);
+        });
     }
 
     // Récupère les images liées à la livraison d'un client
@@ -52,7 +52,7 @@ export class DetailsPage extends HTMLElement {
         console.log(this.images);
         if (this.images) {
             this.images.forEach(val => {
-                html += `<img src='`+ val.filename +`'>`;
+                html += `<img src='admin/`+ val.filename +`'>`;
                 document.getElementById('imgTouDetails').style.height = 'auto';
                 document.getElementById('imgTouDetails').style.backgroundColor = 'transparent';
             });
@@ -63,32 +63,6 @@ export class DetailsPage extends HTMLElement {
         
         document.getElementById('imgTouDetails').innerHTML = html;
 
-        /*
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", 'api.php', true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                let images = JSON.parse(xhr.response);
-                let html = '';
-                
-                console.log(images);
-                if (images) {
-                    images.forEach(val => {
-                        html += `<img src='`+ val.filename +`'>`;
-                        document.getElementById('imgTouDetails').style.height = 'auto';
-                        document.getElementById('imgTouDetails').style.backgroundColor = 'transparent';
-                    });
-                } else {
-                    html = "Pas d'image pour ce client.";
-                    document.getElementById('imgTouDetails').style.backgroundColor = 'white';
-                }
-                
-                document.getElementById('imgTouDetails').innerHTML = html;
-            }
-        }
-        xhr.send(JSON.stringify(data));
-        */
     }
     
 

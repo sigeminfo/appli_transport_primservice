@@ -189,6 +189,9 @@ export class PrecisionsPage extends HTMLElement {
             IOchauf: sessionStorage.getItem('cliweb')
         };
 
+        if (document.getElementById('btn-photos').files[0]) {
+            this.modelTournees.compULImage(document.getElementById('btn-photos').files[0], this.detailsList.facNbl);
+        }
 
         palettes.forEach(palette => {
             console.log(palette.dataset.palCod);
