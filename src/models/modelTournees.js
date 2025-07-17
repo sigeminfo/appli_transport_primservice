@@ -219,7 +219,7 @@ export class ModelTournees {
                     form_data.append('filename', facNbl);
 
                     // Remplacement de $.ajax par fetch
-                    fetch('media/web/tournee/upload/img.php', {
+                    fetch('admin/media/web/tournee/upload/img.php', {
                         method: 'POST',
                         body: form_data
                     })
