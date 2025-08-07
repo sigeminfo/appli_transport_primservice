@@ -65,6 +65,11 @@ input:focus, select:focus {
   overflow-y: scroll; 
 }
 
+#etapes {
+  height: 94%;
+  overflow-y: scroll;
+}
+
 @keyframes moveRight {
   0% {
     width: 32px;
